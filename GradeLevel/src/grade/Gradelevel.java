@@ -14,7 +14,7 @@ public class Gradelevel {
 	 
 	public static  String  studentLevel(int score){
 		 
-		if(score<60){ sadad
+		if(score<60){ 
 		System.out.println("D");
 		return "D";
 		}
