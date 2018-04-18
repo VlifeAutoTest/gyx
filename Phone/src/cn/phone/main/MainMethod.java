@@ -1,36 +1,27 @@
 package cn.phone.main;
 
-import cn.phone.data.Data;
-import cn.phone.utils.ADB;
-import cn.phone.utils.MyProcess;
+import java.io.IOException;
+
 import cn.phone.utils.Mymethods;
 
 public class MainMethod {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		
 
-
-		if (MyProcess.phoneConnectStatus()) {
-			
-			Mymethods.wait(5000);
-			MyProcess.jiesuo();
-
-			ADB.ClearAPP(Data.SHUTDOWNAPPNAME);
-			ADB.ShutdownAPP(Data.SHUTDOWNAPPNAME);
-
-			MyProcess.callPhoneNum();
-
-			ADB.Clickpower();
-
-		}
-
-		else {
-
-			System.out.println("连接出现异常!请确认是否插入手机!!");
+//		String aa=Mymethods.GetMemory("com.yulore.yellowpage");
+//		String aa =Mymethods.getPID("dscreate.net.lwp304290.hw");
+		String aa=Mymethods.getUID("com.yulore.yellowpage");
+//		double aa= Mymethods.getCPU("com.yulore.yellowpage");
+//		double aa=Mymethods.getFlow("com.android.chrome");
+		System.out.println(aa);
+//		for(double a:aa){
+//			
+//			System.out.println(a);
+//		}
 
 		}
 
 	}
 
-}
+
