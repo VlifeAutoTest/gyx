@@ -13,8 +13,8 @@ public class Gradelevel {
 	
 	 
 	public static  String  studentLevel(int score){
-		
-		if(score<60){ 
+		 
+		if(score<60){ sadad
 		System.out.println("D");
 		return "D";
 		}
