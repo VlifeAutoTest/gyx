@@ -7,9 +7,46 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.management.RuntimeErrorException;
+
+import org.dom4j.Element;
+
 import cn.phone.data.Data;
 
 public class ADB {
+	
+	
+	//获取分辨率
+	
+	public  static String [] getSize(){
+		String size[]=new String [2]; 
+			String content = null;
+			try {
+				Process  p=Runtime.getRuntime().exec("adb shell wm size");
+				BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				String line;
+				content = "";
+
+				while ((line = in.readLine()) != null){
+					
+					content = content + line;
+				}
+				p.destroy();
+			} catch (IOException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
+		String[] temp=content.split("x");
+		
+		String x=temp[0].substring(temp[0].indexOf(":")+1).trim();
+		String y=temp[1].substring(0).trim();
+			
+			size[0]=x;
+			size[1]=y;
+			
+			return size;
+	}
 	
 	public static String IPPort=Data.PhoneIP+":"+Data.WIFICONNECTPORT;
 
@@ -57,6 +94,30 @@ public class ADB {
 			}
 
 		}
+		
+	}
+	
+	
+	
+	
+	//重启手机
+	
+public static void ADBReboot() {
+		
+		
+				try {
+					Process ss = Runtime.getRuntime()
+							.exec("adb reboot");
+					ss.waitFor();
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
+			
+		
 		
 	}
 

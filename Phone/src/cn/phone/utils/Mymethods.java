@@ -1,9 +1,18 @@
 package cn.phone.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.dom4j.Element;
 
@@ -369,5 +378,167 @@ tx_bytes，t代表transmit，是传输数据 8列
 		
 
 	}
+	
+	
+	//获取帧数的平均值
+	
+	public static  double getAvg(String packageName){
+		
+		List <Double>list =Mymethods.getzhenshu(packageName);
+		double a=0;
+		for(double temp:list){
+			a=a+temp;
+		}
+		a=a/list.size();
+		
+		return a;
+	}
+	
+	
+	
+	//获取帧数
+	
+	public static List<Double>  getzhenshu(String packageName){
+		
+			new File("C:\\data").mkdirs();
+		   List <Double> list =new LinkedList<>();
+			String value="";	
+			try {
+				Process ss = Runtime.getRuntime().exec("cmd.exe  /c adb shell dumpsys gfxinfo  "+packageName);
+//				ss.waitFor();
+				
+				BufferedInputStream  bis =new BufferedInputStream(ss.getInputStream());
+				String str="";
+				byte[] b=new byte [1024];
+				int a=0;
+				while ((a=bis.read(b))!=-1){
+					String temp=new String (b,0,a);
+					str=str+temp;
+				}
+
+				bis.close();
+				ss.destroy();
+				value=str;
+			} catch (Exception e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			} 
+			
+			int firstDraw=value.lastIndexOf("Draw");
+			int firstView=value.indexOf("View hierarchy:");
+			
+			String bb=value.substring(firstDraw,firstView).trim();
+			
+			
+			
+			
+			
+			
+			
+			FileOutputStream fos=null;
+			
+			DateFormat dateformat= new SimpleDateFormat("yyyyMMdd-HHmmss");  
+            
+	        //利用Date()获取当前时间  
+	        Date date = new Date();  
+	        
+	                      
+	        //格式化时间,并用String对象存储  
+	        String time = dateformat.format(date);  
+	        String name =time+".txt";
+	       
+	        File file =new File ("C://data//"+name);
+			try {
+//				if (!file.exists()) {
+//					
+//					file.mkdirs();
+//				}
+//				
+			 fos =new FileOutputStream(file);
+				fos.write(bb.getBytes());
+				fos.flush();
+			} catch (FileNotFoundException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
+			
+			finally {
+				
+				try {
+					fos.close();
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
+			}
+			
+			try {
+				
+				BufferedReader  br =new BufferedReader(new FileReader(file));	
+//				BufferedInputStream bis =new BufferedInputStream(new FileInputStream(file));
+				String str=br.readLine();
+				String str1[]=str.split("\\ |  |   |    |	");
+				int need[] =new int [str1.length];		
+				int k=0;
+				for (int i = 0; i < str1.length; i++) {   //
+					if ((str1[i].trim().equals("Draw") ) |  (str1[i].trim().equals("Prepare") ) |  (str1[i].trim().equals("Process") ) | (str1[i].trim().equals("Execute") )       ) {
+						need[k]=i;
+						++k;
+					}
+				}
+//				
+//				System.out.println("---------  need  -----------");
+//				for(int c:need){
+//					System.out.println(c);
+//				}
+				
+//			if (need.length==3) {
+//				System.out.println("这个手机的三列的!");
+//			}
+//			if (need.length==4) {
+//				System.out.println("这个手机的四列的!");
+//			}
+//			if (need.length>4) {
+//				System.out.println("这个手机返回的大于四列!");
+//			}
+				
+				String text="";
+				String temp=null;
+				while ((temp=br.readLine())!=null){
+					
+//					System.out.println(temp=br.readLine());
+					if (temp.isEmpty()) {
+						continue;
+					}
+				String data = temp.trim();
+				String a1[]=data.split("\\ |  |   |    |	");
+				
+
+				double cc=0;
+			
+				for (int i = 0; i < need.length; i++) {
+					int mm=need[i];
+					cc=cc+Double.parseDouble(a1[mm].trim());
+				}
+//		System.out.println(cc);
+				
+	           list.add(cc);
+				}
+			} catch (FileNotFoundException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
+		
+			
+			
+			return list;
+		
+		}
 
 }
